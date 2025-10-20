@@ -24,18 +24,18 @@ jobs:
           BASE_DIR="coursera/${{ env.branch_name }}"
           if [ ! -d "$BASE_DIR" ]; then
             echo "Creating boilerplate for $BASE_DIR..."
-            mkdir -p $BASE_DIR/{c,cpp,golang,python}
+            mkdir -p "$BASE_DIR"/{c,cpp,golang,python}
 
-            cat << 'EOF' > $BASE_DIR/c/main.c
+            cat <<'EOF' > "$BASE_DIR/c/main.c"
 #include <stdio.h>
 
 int main() {
-    printf("Hello, C from ${{ env.branch_name }}!\\n");
+    printf("Hello, C from ${BRANCH_NAME}!\n");
     return 0;
 }
 EOF
 
-            cat << 'EOF' > $BASE_DIR/c/Makefile
+            cat <<'EOF' > "$BASE_DIR/c/Makefile"
 all: main
 main: main.c
 \tgcc main.c -o main
@@ -43,40 +43,25 @@ clean:
 \trm -f main
 EOF
 
-            cat << 'EOF' > $BASE_DIR/cpp/CMakeLists.txt
+            cat <<'EOF' > "$BASE_DIR/cpp/CMakeLists.txt"
 cmake_minimum_required(VERSION 3.10)
 project(DSA_CPP)
 set(CMAKE_CXX_STANDARD 17)
 add_executable(main main.cpp)
 EOF
 
-            echo '#include <iostream>\nint main(){std::cout << "Hello, C++ from ${{ env.branch_name }}!\\n";}' > $BASE_DIR/cpp/main.cpp
+            cat <<'EOF' > "$BASE_DIR/cpp/main.cpp"
+#include <iostream>
+int main() {
+    std::cout << "Hello, C++ from ${BRANCH_NAME}!" << std::endl;
+    return 0;
+}
+EOF
 
-            cat << 'EOF' > $BASE_DIR/golang/main.go
+            cat <<'EOF' > "$BASE_DIR/golang/main.go"
 package main
 import "fmt"
-func main() { fmt.Println("Hello, Go from ${{ env.branch_name }}!") }
+func main() {
+    fmt.Println("Hello, Go from ${BRANCH_NAME}!")
+}
 EOF
-
-            cat << 'EOF' > $BASE_DIR/python/main.py
-def main():
-    print("Hello, Python from ${{ env.branch_name }}!")
-
-if __name__ == "__main__":
-    main()
-EOF
-          else
-            echo "Boilerplate already exists. Skipping."
-          fi
-
-      - name: Commit and push boilerplate
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          if [ -n "$(git status --porcelain coursera/${{ env.branch_name }})" ]; then
-            git add coursera/${{ env.branch_name }}
-            git commit -m "Auto-generate boilerplate for ${{ env.branch_name }}"
-            git push origin ${{ env.branch_name }}
-          else
-            echo "No new files to commit."
-          fi
