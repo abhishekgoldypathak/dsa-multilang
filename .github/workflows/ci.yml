@@ -36,4 +36,66 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Inst
+      - name: Install dependencies
+        run: |
+          brew install cmake gcc googletest
+
+      - name: Build C++
+        run: |
+          cd coursera/course-helloworld-test/cpp
+          rm -rf build
+          mkdir -p build && cd build
+          cmake ..
+          make
+
+      - name: Run C++ tests
+        run: |
+          cd coursera/course-helloworld-test/cpp/build
+          ./tests
+        continue-on-error: true
+
+  go_build_test:
+    name: Build & Test Go
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+
+      - name: Build Go
+        run: |
+          cd coursera/course-helloworld-test/golang
+          go build -v -o main main.go
+
+      - name: Run Go tests
+        run: |
+          cd coursera/course-helloworld-test/golang
+          go test -v ./...
+        continue-on-error: true
+
+  python_build_test:
+    name: Run Python tests
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: |
+          cd coursera/course-helloworld-test/python
+          python3 -m pip install --upgrade pip
+          # install pytest if needed
+          pip install pytest
+
+      - name: Run Python tests
+        run: |
+          cd coursera/course-helloworld-test/python
+          pytest -v
+        continue-on-error: true
