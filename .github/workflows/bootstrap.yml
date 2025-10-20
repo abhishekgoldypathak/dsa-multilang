@@ -21,8 +21,6 @@ jobs:
         run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
       - name: Create boilerplate if missing
-        env:
-          BRANCH_NAME: ${{ env.BRANCH_NAME }}
         run: |
           BASE_DIR="coursera/${BRANCH_NAME}"
           echo "Setting up boilerplate in $BASE_DIR"
@@ -30,53 +28,19 @@ jobs:
           if [ ! -d "$BASE_DIR" ]; then
             mkdir -p "$BASE_DIR"/{c,cpp,golang,python}
 
-            cat > "$BASE_DIR/c/main.c" <<EOF
-#include <stdio.h>
+            printf '%s\n' "#include <stdio.h>" "" "int main() {" "    printf(\"Hello, C from ${BRANCH_NAME}!\\n\");" "    return 0;" "}" > "$BASE_DIR/c/main.c"
 
-int main() {
-    printf("Hello, C from ${BRANCH_NAME}!\n");
-    return 0;
-}
-EOF
+            printf '%s\n' "all: main" "main: main.c" $'\tgcc main.c -o main' "clean:" $'\trm -f main' > "$BASE_DIR/c/Makefile"
 
-            cat > "$BASE_DIR/c/Makefile" <<'EOF'
-all: main
-main: main.c
-	gcc main.c -o main
-clean:
-	rm -f main
-EOF
+            printf '%s\n' "cmake_minimum_required(VERSION 3.10)" "project(DSA_CPP)" "set(CMAKE_CXX_STANDARD 17)" "add_executable(main main.cpp)" > "$BASE_DIR/cpp/CMakeLists.txt"
 
-            cat > "$BASE_DIR/cpp/CMakeLists.txt" <<'EOF'
-cmake_minimum_required(VERSION 3.10)
-project(DSA_CPP)
-set(CMAKE_CXX_STANDARD 17)
-add_executable(main main.cpp)
-EOF
+            printf '%s\n' "#include <iostream>" "int main() {" "    std::cout << \"Hello, C++ from ${BRANCH_NAME}!\" << std::endl;" "    return 0;" "}" > "$BASE_DIR/cpp/main.cpp"
 
-            cat > "$BASE_DIR/cpp/main.cpp" <<EOF
-#include <iostream>
-int main() {
-    std::cout << "Hello, C++ from ${BRANCH_NAME}!" << std::endl;
-    return 0;
-}
-EOF
+            printf '%s\n' "package main" "import \"fmt\"" "func main() {" "    fmt.Println(\"Hello, Go from ${BRANCH_NAME}!\")" "}" > "$BASE_DIR/golang/main.go"
 
-            cat > "$BASE_DIR/golang/main.go" <<EOF
-package main
-import "fmt"
-func main() {
-    fmt.Println("Hello, Go from ${BRANCH_NAME}!")
-}
-EOF
+            printf '%s\n' "def main():" "    print(\"Hello, Python from ${BRANCH_NAME}!\")" "" "if __name__ == \"__main__\":" "    main()" > "$BASE_DIR/python/main.py"
 
-            cat > "$BASE_DIR/python/main.py" <<EOF
-def main():
-    print("Hello, Python from ${BRANCH_NAME}!")
-
-if __name__ == "__main__":
-    main()
-EOF
+            echo "Created boilerplate for ${BRANCH_NAME}"
           else
             echo "Boilerplate already exists, skipping."
           fi
