@@ -9,6 +9,7 @@ jobs:
   create_boilerplate:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/heads/course')
+
     steps:
       - name: Checkout the new branch
         uses: actions/checkout@v4
@@ -16,17 +17,20 @@ jobs:
           ref: ${{ github.ref_name }}
 
       - name: Extract branch name
-        id: vars
-        run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+        id: extract
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
       - name: Create boilerplate if missing
+        env:
+          BRANCH_NAME: ${{ env.BRANCH_NAME }}
         run: |
-          BASE_DIR="coursera/${{ env.branch_name }}"
+          BASE_DIR="coursera/${BRANCH_NAME}"
+          echo "Setting up boilerplate in $BASE_DIR"
+
           if [ ! -d "$BASE_DIR" ]; then
-            echo "Creating boilerplate for $BASE_DIR..."
             mkdir -p "$BASE_DIR"/{c,cpp,golang,python}
 
-            cat <<'EOF' > "$BASE_DIR/c/main.c"
+            cat > "$BASE_DIR/c/main.c" <<EOF
 #include <stdio.h>
 
 int main() {
@@ -35,22 +39,22 @@ int main() {
 }
 EOF
 
-            cat <<'EOF' > "$BASE_DIR/c/Makefile"
+            cat > "$BASE_DIR/c/Makefile" <<'EOF'
 all: main
 main: main.c
-\tgcc main.c -o main
+	gcc main.c -o main
 clean:
-\trm -f main
+	rm -f main
 EOF
 
-            cat <<'EOF' > "$BASE_DIR/cpp/CMakeLists.txt"
+            cat > "$BASE_DIR/cpp/CMakeLists.txt" <<'EOF'
 cmake_minimum_required(VERSION 3.10)
 project(DSA_CPP)
 set(CMAKE_CXX_STANDARD 17)
 add_executable(main main.cpp)
 EOF
 
-            cat <<'EOF' > "$BASE_DIR/cpp/main.cpp"
+            cat > "$BASE_DIR/cpp/main.cpp" <<EOF
 #include <iostream>
 int main() {
     std::cout << "Hello, C++ from ${BRANCH_NAME}!" << std::endl;
@@ -58,10 +62,33 @@ int main() {
 }
 EOF
 
-            cat <<'EOF' > "$BASE_DIR/golang/main.go"
+            cat > "$BASE_DIR/golang/main.go" <<EOF
 package main
 import "fmt"
 func main() {
     fmt.Println("Hello, Go from ${BRANCH_NAME}!")
 }
 EOF
+
+            cat > "$BASE_DIR/python/main.py" <<EOF
+def main():
+    print("Hello, Python from ${BRANCH_NAME}!")
+
+if __name__ == "__main__":
+    main()
+EOF
+          else
+            echo "Boilerplate already exists, skipping."
+          fi
+
+      - name: Commit and push boilerplate
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          if [ -n "$(git status --porcelain coursera/${BRANCH_NAME})" ]; then
+            git add "coursera/${BRANCH_NAME}"
+            git commit -m "Auto-generate boilerplate for ${BRANCH_NAME}"
+            git push origin "${BRANCH_NAME}"
+          else
+            echo "No new files to commit."
+          fi
