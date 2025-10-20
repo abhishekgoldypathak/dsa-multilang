@@ -1,4 +1,0 @@
-/Users/abhishekpathak/Downloads/code/stanford-dsa-multilang/coursera/course-helloworld-test/cpp/build/CMakeFiles/main.dir
-/Users/abhishekpathak/Downloads/code/stanford-dsa-multilang/coursera/course-helloworld-test/cpp/build/CMakeFiles/tests.dir
-/Users/abhishekpathak/Downloads/code/stanford-dsa-multilang/coursera/course-helloworld-test/cpp/build/CMakeFiles/edit_cache.dir
-/Users/abhishekpathak/Downloads/code/stanford-dsa-multilang/coursera/course-helloworld-test/cpp/build/CMakeFiles/rebuild_cache.dir
