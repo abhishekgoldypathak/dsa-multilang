@@ -1,41 +1,102 @@
-# Prerequisites
-*.d
+# ------------------
+# C build artifacts
+# ------------------
+c/*.o
+c/*.out
+c/main
+c/test
+c/*.exe
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Unity temporary files
+c/unity/*.o
+c/unity/*.obj
 
-# Precompiled Headers
-*.gch
-*.pch
+# ------------------
+# C++ build artifacts
+# ------------------
+cpp/build/
+cpp/*.o
+cpp/*.out
+cpp/main
+cpp/tests
+cpp/*.exe
 
-# Linker files
-*.ilk
+# ------------------
+# Go artifacts
+# ------------------
+golang/bin/
+golang/*.exe
+golang/*.out
 
-# Debugger Files
-*.pdb
+# ------------------
+# Python artifacts
+# ------------------
+__pycache__/
+*.pyc
+*.pyo
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# ------------------
+# VSCode settings
+# ------------------
+.vscode/*.code-workspace
 
-# Fortran module files
-*.mod
-*.smod
+# ------------------
+# MacOS
+# ------------------
+.DS_Store
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# ------------------
+# Logs
+# ------------------
+*.log
+# ------------------
+# C build artifacts
+# ------------------
+c/*.o
+c/*.out
+c/main
+c/test
+c/*.exe
 
-# Executables
-*.exe
-*.out
-*.app
+# Unity temporary files
+c/unity/*.o
+c/unity/*.obj
 
-# debug information files
-*.dwo
+# ------------------
+# C++ build artifacts
+# ------------------
+cpp/build/
+cpp/*.o
+cpp/*.out
+cpp/main
+cpp/tests
+cpp/*.exe
+
+# ------------------
+# Go artifacts
+# ------------------
+golang/bin/
+golang/*.exe
+golang/*.out
+
+# ------------------
+# Python artifacts
+# ------------------
+__pycache__/
+*.pyc
+*.pyo
+
+# ------------------
+# VSCode settings
+# ------------------
+.vscode/*.code-workspace
+
+# ------------------
+# MacOS
+# ------------------
+.DS_Store
+
+# ------------------
+# Logs
+# ------------------
+*.log

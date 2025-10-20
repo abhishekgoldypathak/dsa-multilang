@@ -1,0 +1,67 @@
+name: DSA MultiLang CI
+
+# Trigger on push to main or PR
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: # manual trigger
+
+jobs:
+  build-and-test:
+    runs-on: macos-latest # Use GitHub-hosted macOS runner
+
+    steps:
+      # Checkout repo
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      # -------------------
+      # C Build & Test
+      # -------------------
+      - name: Build C
+        run: |
+          cd coursera/course-helloworld-test/c
+          make clean
+          make
+
+      # -------------------
+      # C++ Build & Test
+      # -------------------
+      - name: Build C++
+        run: |
+          cd coursera/course-helloworld-test/cpp
+          cmake -S . -B build
+          cmake --build build
+          ./build/main
+          ./build/tests
+
+      # -------------------
+      # Go Build & Test
+      # -------------------
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21
+
+      - name: Build & Test Go
+        run: |
+          cd coursera/course-helloworld-test/golang
+          go test
+
+      # -------------------
+      # Python Test
+      # -------------------
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Run Python tests
+        run: |
+          cd coursera/course-helloworld-test/python
+          pytest

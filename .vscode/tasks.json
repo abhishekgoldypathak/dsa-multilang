@@ -1,0 +1,41 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build C++",
+            "type": "shell",
+            "command": "cmake --build cpp/build",
+            "group": "build"
+        },
+        {
+            "label": "Test C++",
+            "type": "shell",
+            "command": "cpp/build/tests",
+            "group": "test"
+        },
+        {
+            "label": "Build C",
+            "type": "shell",
+            "command": "make -C c",
+            "group": "build"
+        },
+        {
+            "label": "Test C",
+            "type": "shell",
+            "command": "c/test",
+            "group": "test"
+        },
+        {
+            "label": "Run Go Tests",
+            "type": "shell",
+            "command": "go test ./golang/...",
+            "group": "test"
+        },
+        {
+            "label": "Run Python Tests",
+            "type": "shell",
+            "command": "pytest python",
+            "group": "test"
+        }
+    ]
+}
